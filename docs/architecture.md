@@ -4,7 +4,7 @@
 
 ReSMOTE-DR is a diabetic retinopathy image-analysis experiment built around EfficientNet-B4, multi-task learning, feature-level SMOTE, classification-head training and ensemble inference.
 
-The repository is packaged as a public portfolio project. It keeps the experiment notebooks and lightweight result markers, while excluding raw medical images, cached NumPy arrays and model checkpoints.
+The repository keeps the experiment notebooks and lightweight result records, while excluding raw medical images, cached NumPy arrays and model checkpoints.
 
 ## Workflow
 
@@ -26,18 +26,25 @@ The repository is packaged as a public portfolio project. It keeps the experimen
 
 ## Metrics Preserved in This Repository
 
-The lightweight files under `results/` preserve the best validation markers from the experiments:
+The lightweight files under `results/` preserve validation markers and copied experiment notebooks:
 
 | Result marker | Meaning |
 | --- | --- |
 | `best_val_loss_0.6841.txt` | Best recorded validation loss marker for an EfficientNet-B4 multi-task run |
-| `best_val_acc0.8251.txt` | Best recorded classification-head validation accuracy marker |
-| `best_val_acc0.8279.txt` | Best recorded classification-head validation accuracy marker from the no-early-stop run |
+| `best_val_acc0.8251.txt` | Classification-head validation accuracy marker |
+| `best_val_acc0.8279.txt` | Classification-head validation accuracy marker from a no-early-stop run |
 | `best_grid_thresholds.pkl` | Saved optimized threshold arrays for regression-output discretization |
 
-Additional notebook outputs record inference comparisons including regression, backbone-head, MLP-head and ensemble metrics.
+Representative notebook outputs include:
 
-## Public Packaging Decisions
+| Branch / strategy | Accuracy | Quadratic kappa |
+| --- | --- | --- |
+| Regression branch with optimized thresholds | `0.7992-0.8101` | `0.8869-0.8917` |
+| Backbone classification branch | `0.8265-0.8292` | `0.8791-0.8970` |
+| Residual MLP classification branch | up to `0.8484` | up to `0.9017` |
+| Multi-branch ensemble | `0.8279-0.8388` | up to `0.9040` |
+
+## Public Release Boundaries
 
 Excluded content:
 
@@ -50,6 +57,7 @@ Excluded content:
 Preserved content:
 
 - experiment notebooks,
+- copied notebooks for recorded experiment variants,
 - result marker files,
 - optimized threshold pickle files,
-- documentation describing the method and repository scope.
+- documentation describing the method and reproducibility boundaries.

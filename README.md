@@ -1,22 +1,24 @@
 # ReSMOTE-DR
 
-ReSMOTE-DR is a portfolio-oriented diabetic retinopathy image-analysis project built around EfficientNet-B4, multi-task learning, feature-level SMOTE, threshold search and multi-branch ensemble inference.
+ReSMOTE-DR is a diabetic retinopathy image-analysis experiment built around EfficientNet-B4, multi-task regression/classification training, feature-level SMOTE, threshold search and multi-branch ensemble inference.
 
-## Project Highlights
+The repository preserves the training, classification-head, threshold-search and inference notebooks together with lightweight result records. Raw retinal image datasets, local CSV splits, preprocessing caches and model checkpoints are intentionally excluded.
 
-- **EfficientNet-B4 backbone**: uses an ImageNet-pretrained EfficientNet-B4 as the main retinal image feature extractor.
-- **Multi-task learning**: trains a shared backbone with one regression output and five classification logits for diabetic retinopathy severity prediction.
-- **Feature-level SMOTE**: extracts EfficientNet features and applies SMOTE in feature space to handle class imbalance before training a residual MLP classification head.
-- **Threshold search**: preserves optimized threshold files for mapping continuous regression predictions to discrete DR severity classes.
-- **Multi-branch ensemble**: compares regression, backbone classification, MLP classification and ensemble strategies with validation/test metrics.
+## Technical Highlights
+
+- **EfficientNet-B4 backbone**: uses an ImageNet-pretrained EfficientNet-B4 as the retinal image feature extractor.
+- **Multi-task output head**: trains one regression output for continuous severity prediction and five classification logits for DR grade prediction.
+- **Feature-level SMOTE**: extracts EfficientNet-B4 features, balances them in feature space and trains a residual MLP classification head.
+- **Threshold search**: optimizes regression-output thresholds for converting continuous predictions into discrete severity grades.
+- **Branch comparison**: evaluates regression, backbone classification, residual MLP classification and ensemble inference paths.
 
 ## Repository Layout
 
 ```text
 ReSMOTE-DR/
-├── notebooks/              # Training, classification-head and inference notebooks
-├── results/                # Lightweight result markers and threshold files
-├── docs/                   # Architecture and packaging notes
+├── notebooks/              # Main training, head-training and inference notebooks
+├── results/                # Lightweight result markers, threshold files and copied experiment notebooks
+├── docs/                   # Method and reproducibility notes
 ├── requirements.txt        # Python dependencies used by the notebooks
 ├── .gitignore              # Excludes datasets, caches and model weights
 └── README.md
@@ -27,12 +29,28 @@ ReSMOTE-DR/
 The experiment workflow is:
 
 1. Load APTOS-style retinal fundus images and resize them to `448 x 448`.
-2. Train an EfficientNet-B4 multi-task model with:
-   - one regression output for continuous severity prediction,
+2. Train an EfficientNet-B4 backbone with a multi-task head:
+   - regression output for continuous severity prediction,
    - five classification logits for severity-class prediction.
-3. Optimize thresholds for converting regression outputs into integer DR grades.
-4. Extract backbone features and train a residual MLP classification head after feature-level SMOTE balancing.
-5. Evaluate regression, backbone-head, MLP-head and ensemble predictions.
+3. Optimize thresholds for mapping regression outputs to integer DR grades.
+4. Extract EfficientNet-B4 features and apply feature-level SMOTE.
+5. Train a residual MLP classification head on the balanced feature vectors.
+6. Compare regression, backbone-head, MLP-head and ensemble predictions with accuracy and quadratic kappa.
+
+## Notebook Result Summary
+
+Representative metrics below are taken from preserved notebook outputs. They are experiment records, not benchmark claims, because the public repository does not include the original data splits or checkpoints required for exact reproduction.
+
+| Experiment branch / strategy | Preserved notebook output |
+| --- | --- |
+| EfficientNet-B4 multi-task backbone | Best validation loss marker: `0.6841`; validation classification accuracy reached `0.8306`; regression kappa reached `0.8859` in logged epochs |
+| Residual MLP head with EfficientNet-B4 features + SMOTE | Validation accuracy reached `0.8279` in the main notebook; copied experiment records include `best_val_acc0.8251.txt` and `best_val_acc0.8279.txt` |
+| Regression branch with optimized thresholds | Accuracy around `0.7992-0.8101`; quadratic kappa around `0.8869-0.8917` in inference notebooks |
+| Backbone classification branch | Accuracy around `0.8265-0.8292`; quadratic kappa around `0.8791-0.8970` |
+| Residual MLP classification branch | Accuracy up to `0.8484`; quadratic kappa up to `0.9017` |
+| Multi-branch ensemble | Accuracy around `0.8279-0.8388`; quadratic kappa up to `0.9040` |
+
+The results show why the experiment compares multiple prediction paths rather than relying on a single head: the MLP branch gives the highest recorded accuracy, while static ensemble inference records the highest quadratic kappa.
 
 ## Notebooks
 
@@ -44,31 +62,20 @@ The experiment workflow is:
 | `notebooks/static_weight_ensemble.ipynb` | Static ensemble inference variants |
 | `notebooks/test_head_inference.ipynb` | Test/inference workflow and branch comparison |
 
-## Key Experiment Records
+Copied notebooks under `results/` preserve the experiment variants associated with specific result markers.
 
-The repository keeps lightweight result markers under `results/`:
+## Preserved Result Files
 
 | Record | Meaning |
 | --- | --- |
-| `best_val_loss_0.6841.txt` | Best validation-loss marker from an EfficientNet-B4 multi-task run |
-| `best_val_acc0.8251.txt` | Classification-head validation accuracy marker |
-| `best_val_acc0.8279.txt` | Best classification-head validation accuracy marker in a no-early-stop run |
-| `best_grid_thresholds.pkl` | Optimized threshold arrays for regression-output discretization |
-
-Representative notebook outputs include:
-
-| Branch / strategy | Example metric from preserved outputs |
-| --- | --- |
-| Regression branch with optimized thresholds | Acc around `0.80`, quadratic kappa around `0.89` |
-| Backbone classification head | Acc around `0.83`, quadratic kappa around `0.88-0.90` |
-| Residual MLP classification head | Acc up to `0.8484`, quadratic kappa up to `0.9017` |
-| Multi-branch ensemble | Acc around `0.83-0.84`, quadratic kappa up to `0.9040` |
-
-These values are preserved as experiment evidence in the notebooks rather than as a formal benchmark claim, because the public repository does not include the original data splits or model checkpoints.
+| `results/exp_effb4_regression/exp2/best_val_loss_0.6841.txt` | Best validation-loss marker from an EfficientNet-B4 multi-task run |
+| `results/exp_effb4_regression/exp2/classify_head/exp2/best_val_acc0.8251.txt` | Classification-head validation accuracy marker |
+| `results/exp_effb4_regression/exp4-no-early/classify_head/exp1/best_val_acc0.8279.txt` | Classification-head validation accuracy marker from a no-early-stop run |
+| `best_grid_thresholds.pkl` files | Optimized threshold arrays for regression-output discretization |
 
 ## Data and Checkpoint Policy
 
-This public repository intentionally excludes:
+This repository intentionally excludes:
 
 - raw retinal image datasets,
 - local train/validation/test CSV splits,
@@ -100,14 +107,14 @@ pip install -r requirements.txt
 
 The experiments were designed for a CUDA-enabled PyTorch environment. Some notebook paths and GPU IDs reflect the original training machine and should be adjusted before rerunning.
 
-## Project Value
+## Technical Scope
 
-This project demonstrates:
+This repository covers:
 
-- medical image classification experiment design,
-- EfficientNet-B4 transfer learning,
+- EfficientNet-B4 transfer learning for retinal image grading,
 - multi-task regression/classification training,
-- class-imbalance handling with SMOTE,
-- validation-threshold search,
-- ensemble inference and metric analysis,
-- packaging a research-style notebook experiment into a public portfolio project.
+- feature-level class balancing with SMOTE,
+- residual MLP classification-head experiments,
+- threshold search for regression-output discretization,
+- branch-level and ensemble metric comparison,
+- public-release boundaries for medical-image experiments.
