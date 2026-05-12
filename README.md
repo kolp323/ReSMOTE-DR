@@ -2,8 +2,6 @@
 
 ReSMOTE-DR is a portfolio-oriented diabetic retinopathy image-analysis project built around EfficientNet-B4, multi-task learning, feature-level SMOTE, threshold search and multi-branch ensemble inference.
 
-本项目由 `d2l/avote_all_train` 中的医学图像实验整理而来，保留了具有展示价值的训练、分类头、阈值搜索和集成推理实验记录。公开仓库不包含原始医学图像数据、预处理缓存或模型权重。
-
 ## Project Highlights
 
 - **EfficientNet-B4 backbone**: uses an ImageNet-pretrained EfficientNet-B4 as the main retinal image feature extractor.
