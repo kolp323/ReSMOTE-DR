@@ -1,0 +1,40 @@
+# Data and generated caches
+data/
+datasets/
+inputs/
+outputs/
+checkpoints/
+weights/
+models/
+runs/
+wandb/
+mlruns/
+*.npy
+*.npz
+*.csv
+
+# Model artifacts
+*.pth
+*.pt
+*.ckpt
+*.onnx
+*.safetensors
+
+# Python and Jupyter
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.bak
+
+# Editor and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
