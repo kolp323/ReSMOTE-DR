@@ -2,7 +2,7 @@
 
 ReSMOTE-DR is a diabetic retinopathy image-analysis experiment built around EfficientNet-B4, multi-task regression/classification training, feature-level SMOTE, threshold search and multi-branch ensemble inference.
 
-The repository preserves the training, classification-head, threshold-search and inference notebooks together with lightweight result records. Raw retinal image datasets, local CSV splits, preprocessing caches and model checkpoints are intentionally excluded.
+The workflow covers backbone training, feature extraction, SMOTE-balanced head training, regression-threshold optimization and ensemble evaluation for DR severity grading.
 
 ## Technical Highlights
 
@@ -17,7 +17,7 @@ The repository preserves the training, classification-head, threshold-search and
 ```text
 ReSMOTE-DR/
 ├── notebooks/              # Main training, head-training and inference notebooks
-├── results/                # Lightweight result markers, threshold files and copied experiment notebooks
+├── results/                # Result files, threshold files and experiment notebooks
 ├── docs/                   # Method and reproducibility notes
 ├── requirements.txt        # Python dependencies used by the notebooks
 ├── .gitignore              # Excludes datasets, caches and model weights
@@ -39,12 +39,12 @@ The experiment workflow is:
 
 ## Notebook Result Summary
 
-Representative metrics below are taken from preserved notebook outputs. They are experiment records, not benchmark claims, because the public repository does not include the original data splits or checkpoints required for exact reproduction.
+The table below summarizes representative metrics from the experiment notebooks.
 
-| Experiment branch / strategy | Preserved notebook output |
+| Experiment branch / strategy | Notebook output |
 | --- | --- |
-| EfficientNet-B4 multi-task backbone | Best validation loss marker: `0.6841`; validation classification accuracy reached `0.8306`; regression kappa reached `0.8859` in logged epochs |
-| Residual MLP head with EfficientNet-B4 features + SMOTE | Validation accuracy reached `0.8279` in the main notebook; copied experiment records include `best_val_acc0.8251.txt` and `best_val_acc0.8279.txt` |
+| EfficientNet-B4 multi-task backbone | Best validation loss: `0.6841`; validation classification accuracy reached `0.8306`; regression kappa reached `0.8859` in logged epochs |
+| Residual MLP head with EfficientNet-B4 features + SMOTE | Validation accuracy reached `0.8279`; result files include `best_val_acc0.8251.txt` and `best_val_acc0.8279.txt` |
 | Regression branch with optimized thresholds | Accuracy around `0.7992-0.8101`; quadratic kappa around `0.8869-0.8917` in inference notebooks |
 | Backbone classification branch | Accuracy around `0.8265-0.8292`; quadratic kappa around `0.8791-0.8970` |
 | Residual MLP classification branch | Accuracy up to `0.8484`; quadratic kappa up to `0.9017` |
@@ -62,26 +62,18 @@ The results show why the experiment compares multiple prediction paths rather th
 | `notebooks/static_weight_ensemble.ipynb` | Static ensemble inference variants |
 | `notebooks/test_head_inference.ipynb` | Test/inference workflow and branch comparison |
 
-Copied notebooks under `results/` preserve the experiment variants associated with specific result markers.
+Experiment notebooks under `results/` document the variants associated with specific result files.
 
-## Preserved Result Files
+## Result Files
 
 | Record | Meaning |
 | --- | --- |
-| `results/exp_effb4_regression/exp2/best_val_loss_0.6841.txt` | Best validation-loss marker from an EfficientNet-B4 multi-task run |
-| `results/exp_effb4_regression/exp2/classify_head/exp2/best_val_acc0.8251.txt` | Classification-head validation accuracy marker |
-| `results/exp_effb4_regression/exp4-no-early/classify_head/exp1/best_val_acc0.8279.txt` | Classification-head validation accuracy marker from a no-early-stop run |
+| `results/exp_effb4_regression/exp2/best_val_loss_0.6841.txt` | Best validation loss from an EfficientNet-B4 multi-task run |
+| `results/exp_effb4_regression/exp2/classify_head/exp2/best_val_acc0.8251.txt` | Classification-head validation accuracy |
+| `results/exp_effb4_regression/exp4-no-early/classify_head/exp1/best_val_acc0.8279.txt` | Classification-head validation accuracy from a no-early-stop run |
 | `best_grid_thresholds.pkl` files | Optimized threshold arrays for regression-output discretization |
 
-## Data and Checkpoint Policy
-
-This repository intentionally excludes:
-
-- raw retinal image datasets,
-- local train/validation/test CSV splits,
-- cached `*.npy` image arrays,
-- PyTorch model checkpoints such as `*.pth`,
-- large generated outputs.
+## Data Layout
 
 Expected local data layout for rerunning the notebooks is APTOS-style:
 
@@ -105,7 +97,7 @@ Install the core dependencies with:
 pip install -r requirements.txt
 ```
 
-The experiments were designed for a CUDA-enabled PyTorch environment. Some notebook paths and GPU IDs reflect the original training machine and should be adjusted before rerunning.
+The experiments were designed for a CUDA-enabled PyTorch environment. Update notebook paths and GPU IDs as needed for your local setup.
 
 ## Technical Scope
 
@@ -117,4 +109,4 @@ This repository covers:
 - residual MLP classification-head experiments,
 - threshold search for regression-output discretization,
 - branch-level and ensemble metric comparison,
-- public-release boundaries for medical-image experiments.
+- reproducibility notes for local medical-image experiments.
