@@ -1,11 +1,11 @@
 # ReSMOTE-DR
 
-[中文版](#中文版) | [English Version](#english-version)
+[中文文档](#中文文档) | [English Documentation](#english-documentation)
 
 ---
 
-<a name="中文版"></a>
-# ReSMOTE-DR (中文版)
+<a name="中文文档"></a>
+# ReSMOTE-DR (中文文档)
 
 ReSMOTE-DR 是一个专注于糖尿病视网膜病变（Diabetic Retinopathy, DR）图像分析的实验性项目。该项目基于 EfficientNet-B4 模型，结合多任务回归/分类训练、特征级 SMOTE（合成少数类过采样技术）、阈值搜索和多分支集成推理技术。
 
@@ -103,8 +103,8 @@ pip install -r requirements.txt
 
 ---
 
-<a name="english-version"></a>
-# ReSMOTE-DR (English Version)
+<a name="english-documentation"></a>
+# ReSMOTE-DR (English Documentation)
 
 ReSMOTE-DR is a diabetic retinopathy (DR) image-analysis experimental project built around EfficientNet-B4, multi-task regression/classification training, feature-level SMOTE, threshold search, and multi-branch ensemble inference.
 
